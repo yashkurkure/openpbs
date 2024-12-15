@@ -44,7 +44,6 @@
 .settings/
 .autotools
 .csettings/
-.devcontainer/
 
 # Files used by ctags
 tags

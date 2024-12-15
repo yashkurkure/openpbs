@@ -1,0 +1,9 @@
+{
+    "name": "OpenPBS Dev Container",
+    "dockerFile": "Dockerfile",
+    "postCreateCommand": "bash .devcontainer/postcreate.sh",
+    "remoteEnv": {
+        "PATH": "${env:PATH}:/opt/ptl/bin",
+        "PYTHONPATH": "${env:PYTHONPATH}:/opt/ptl/lib/python3.12/site-packages"
+      }
+}
