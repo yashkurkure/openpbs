@@ -44,68 +44,18 @@ from ptl.utils.pbs_testsuite import *
 import statistics
 
 
-class EmulationEnv(PBSTestSuite):
+class EmulationTest(PBSTestSuite):
     """
-    Base test suite for Performance tests
+    Base test suite for the emulation tests.
     """
 
-    def check_value(self, res):
-        if isinstance(res, list):
-            for val in res:
-                if not isinstance(val, (int, float)):
-                    raise self.failureException(
-                        "Test result list must be int or float")
-        else:
-            if not isinstance(res, (int, float)):
-                raise self.failureException("Test result must be int or float")
 
-    def perf_test_result(self, result, test_measure, unit):
+    def init_cluster(self, num_nodes, num_cpus_per_node):
         """
-        Add test results to json file. If a multiple trial values are passed
-        calculate mean,std_dev,min,max for the list.
+        Refer:
+            - pbs_jobperf.py test_job_performance_sched_off
         """
-        self.check_value(result)
-
-        if isinstance(result, list) and len(result) > 1:
-            mean_res = statistics.mean(result)
-            stddev_res = statistics.stdev(result)
-            lowv = mean_res - (stddev_res * 2)
-            uppv = mean_res + (stddev_res * 2)
-            new_result = [x for x in result if x > lowv and x < uppv]
-            if len(new_result) == 0:
-                new_result = result
-            max_res = round(max(new_result), 2)
-            min_res = round(min(new_result), 2)
-            mean_res = statistics.mean(new_result)
-            mean_res = round(mean_res, 2)
-            trial_no = 1
-            trial_data = []
-            for trial_result in result:
-                trial_result = round(trial_result, 2)
-                trial_data.append(
-                    {"trial_no": trial_no, "value": trial_result})
-                trial_no += 1
-            test_data = {"test_measure": test_measure,
-                         "unit": unit,
-                         "test_data": {"mean": mean_res,
-                                       "std_dev": stddev_res,
-                                       "minimum": min_res,
-                                       "maximum": max_res,
-                                       "trials": trial_data,
-                                       "samples_considered": len(new_result),
-                                       "total_samples": len(result)}}
-            return self.set_test_measurements(test_data)
-        else:
-            variance = 0
-            if isinstance(result, list):
-                result = result[0]
-            if isinstance(result, float):
-                result = round(result, 2)
-            testdic = {"test_measure": test_measure, "unit": unit,
-                       "test_data": {"mean": result,
-                                     "std_dev": variance,
-                                     "minimum": result,
-                                     "maximum": result}}
-            return self.set_test_measurements(testdic)
-
-    pass
+        counts = self.server.counter(NODE, {'state': 'free'})
+        if counts['state=free'] < num_nodes:
+            a = {'resources_available.ncpus': num_cpus_per_node}
+            self.server.create_moms('mom', a, num_nodes, self.mom)
