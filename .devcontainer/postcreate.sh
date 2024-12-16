@@ -22,6 +22,7 @@ PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
 
 
 # Create groups and users for PTL
+# or run pbs_config --make-ug
 groupadd -g 1900 tstgrp00
 groupadd -g 1901 tstgrp01
 groupadd -g 1902 tstgrp02
