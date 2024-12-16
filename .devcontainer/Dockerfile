@@ -44,4 +44,5 @@ RUN  apt-get install -y \
     python3-defusedxml \
     python3-pexpect \
     python3-pytest \
-    python3-nose
+    python3-nose \
+    python3-pandas

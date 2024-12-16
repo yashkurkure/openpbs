@@ -2,8 +2,21 @@
     "name": "OpenPBS Dev Container",
     "dockerFile": "Dockerfile",
     "postCreateCommand": "bash .devcontainer/postcreate.sh",
+
+    // Required for running OpenPBS PTL test enviorment
     "remoteEnv": {
         "PATH": "${env:PATH}:/opt/ptl/bin",
         "PYTHONPATH": "${env:PYTHONPATH}:/opt/ptl/lib/python3.12/site-packages"
-      }
+    },
+
+
+    // Extensions to install
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "GitHub.copilot"
+            ]
+        }
+    }
 }
